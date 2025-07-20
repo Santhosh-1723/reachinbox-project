@@ -1,0 +1,81 @@
+<!-- public/emails.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ReachInbox - Emails</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #search {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .email {
+      background: white;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .email h3 {
+      margin: 0 0 8px;
+    }
+    .email p {
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Inbox</h1>
+  <input type="text" id="search" placeholder="Search by subject..." />
+  <div id="emails"></div>
+
+  <script>
+    async function loadEmails() {
+      const res = await fetch('/emails');
+      const data = await res.json();
+      displayEmails(data);
+    }
+
+    function displayEmails(emails) {
+      const container = document.getElementById('emails');
+      container.innerHTML = '';
+
+      emails.forEach(email => {
+        const div = document.createElement('div');
+        div.className = 'email';
+        div.innerHTML = `
+          <h3>${email.subject || '(No Subject)'}</h3>
+          <p><strong>From:</strong> ${email.from}</p>
+          <p><strong>To:</strong> ${email.to}</p>
+          <p><strong>Date:</strong> ${new Date(email.date).toLocaleString()}</p>
+          <p><strong>Category:</strong> ${email.category || 'Uncategorized'}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('search').addEventListener('input', e => {
+      const value = e.target.value.toLowerCase();
+      const allEmails = document.querySelectorAll('.email');
+      allEmails.forEach(email => {
+        const subject = email.querySelector('h3').textContent.toLowerCase();
+        email.style.display = subject.includes(value) ? 'block' : 'none';
+      });
+    });
+
+    loadEmails();
+  </script>
+</body>
+</html>
