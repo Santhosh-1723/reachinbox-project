@@ -3,7 +3,7 @@ const imaps = require("imap-simple");
 const { simpleParser } = require("mailparser");
 const { Client } = require("@elastic/elasticsearch");
 
-// Connect to Elasticsearch
+
 const esClient = new Client({ node: process.env.ELASTICSEARCH_NODE });
 
 const config = {
@@ -23,7 +23,7 @@ async function readEmails() {
     const connection = await imaps.connect({ imap: config.imap });
     await connection.openBox("INBOX");
 
-   // const searchCriteria = ["ALL"];
+   
    const thirtyDaysAgo = new Date();
 thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 const searchCriteria = [['SINCE', thirtyDaysAgo.toISOString().slice(0, 10)]];
@@ -48,14 +48,14 @@ const searchCriteria = [['SINCE', thirtyDaysAgo.toISOString().slice(0, 10)]];
     html: parsed.html
   };
 
-  // 🛑 Add delay to prevent hitting rate limits
+
   await new Promise(resolve => setTimeout(resolve, 2000));
 
-  // 🔍 Get AI category before indexing
+
   const category = await categorizeEmail(parsed.subject, parsed.text);
   emailData.category = category;
 
-  // ✅ Save to Elasticsearch with category
+ 
   await esClient.index({
     index: "emails",
     body: emailData
@@ -80,7 +80,7 @@ async function categorizeEmail(subject, body) {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-3.5-turbo",  // You can try 'anthropic/claude-3-haiku' too
+        model: "openai/gpt-3.5-turbo",  
         messages: [
           {
             role: "system",
@@ -98,7 +98,7 @@ async function categorizeEmail(subject, body) {
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://localhost", // You can keep this or change to your website URL
+          "HTTP-Referer": "https://localhost", 
           "X-Title": "ReachInbox Categorizer",
         },
       }
