@@ -7,10 +7,10 @@ const { Client } = require('@elastic/elasticsearch');
 const path = require('path');
 const app = express();
 
-// Serve static files like emails.html
+
 app.use(express.static('public'));
 
-// Connect to Elasticsearch
+
 const client = new Client({ node: 'http://localhost:9200' });
 
 
@@ -19,13 +19,13 @@ const client = new Client({ node: 'http://localhost:9200' });
 
 const port = process.env.PORT || 3000;
 
-// Elasticsearch client
-const esClient = new Client({ node: 'http://localhost:9200' }); // or your ES URL
 
-// Search endpoint (multi-field)
+const esClient = new Client({ node: 'http://localhost:9200' }); 
 
 
-// url for get operation : http://localhost:3000/search?q=invoice
+
+
+
 
 
 
@@ -38,7 +38,7 @@ app.get('/search', async (req, res) => {
 
   try {
     const result = await esClient.search({
-      index: 'emails', // your actual index name
+      index: 'emails', 
       body: {
         query: {
           multi_match: {
@@ -58,7 +58,7 @@ app.get('/search', async (req, res) => {
 });
 
 
-// 🔍 New endpoint: search by exact sender email
+
 // app.get('/search/from', async (req, res) => {
 //   const senderEmail = req.query.email;
 
@@ -157,7 +157,7 @@ app.listen(3000, () => {
 
 
 
-// Process and index emails
+
 (async () => {
   const fetchedEmails = await readEmails();
 
@@ -190,11 +190,11 @@ app.listen(3000, () => {
       await sendWebhookNotification(emailData);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1200)); // Wait 1.2 seconds between requests
+    await new Promise(resolve => setTimeout(resolve, 1200)); 
   }
 })();
 
-// const axios = require("axios");
+
 
 async function sendSlackNotification(emailData) {
   const slackMessage = {
@@ -205,7 +205,7 @@ async function sendSlackNotification(emailData) {
     await axios.post(process.env.SLACK_WEBHOOK_URL, slackMessage);
     console.log("🔔 Slack notification sent.");
   } catch (err) {
-    console.error("❌ Slack notification failed:", err.message);
+    console.error("Slack notification failed:", err.message);
   }
 }
 
