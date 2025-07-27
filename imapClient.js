@@ -61,13 +61,13 @@ const searchCriteria = [['SINCE', thirtyDaysAgo.toISOString().slice(0, 10)]];
     body: emailData
   });
 
-  console.log(`✅ Indexed: "${emailData.subject}" → Category: ${category}`);
+  console.log(` Indexed: "${emailData.subject}" → Category: ${category}`);
 }
 
 
     connection.end();
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error(" Error:", err.message);
   }
 }
 
